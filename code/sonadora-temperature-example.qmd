@@ -1,9 +1,9 @@
 ---
 title: "Linear regression: Sonadora temperature and elevation example"
-author: "your name here"
-date: "insert date here"
+author: "Ben Wollack"
+date: "2026/05/15"
 format:
-  html:
+  pdf:
     toc: true # use this to display a table of contents
 execute:
   message: false # use this to make sure messages don't show up
@@ -71,6 +71,10 @@ sonadora_sum <- sonadora_clean |>
   # arrange in order of elevation
   arrange(elevation_m)
 ```
+
+The sonadora_clean data frame has the information for all plots (plot name, elevation, daily temperature), with one observation based on the date.
+
+The sonadora_sum takes all information from one plot and finds the mean temperature at that plot. Elevation information is retained.
 
 ## c. Exploratory data visualization
 
