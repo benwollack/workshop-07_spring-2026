@@ -90,6 +90,8 @@ ggplot(data = sonadora_sum,
 
 ```
 
+The temperature is dropping as elevation increases. It appears linear.
+
 ## d. Temperature model
 
 ```{r}
@@ -103,6 +105,8 @@ temperature_model <- lm(
 
 ```
 
+Run `temperature_model` is the console.
+
 ### Diagnostics
 
 ```{r}
@@ -114,16 +118,21 @@ plot(temperature_model)
 
 ```
 
+Point 16 is an outlier and appears to have a nonlinear pattern associated. We may have to remove this point for analysis, as the model may only be linear over a small range (200-900m)
+
+Otherwise, the linear model seems to fit here.
+
 ### Model summary
 
 ```{r}
 #| label: temperature-model-summary
 
+# display information about the model
 summary(temperature_model)
 
 ```
 
-**For each meter of elevation gain, you would expect a decrease in temperature equivalent to 0.01 ± 0.0003 (SE) °C.**
+**For each meter of elevation gain, you would expect a decrease in temperature equivalent to 0.006 ± 0.0003 (SE) °C.**
 
 ### Generating predictions
 
@@ -180,6 +189,7 @@ ggplot(data = sonadora_sum,
 ```{r}
 #| label: temperature-model-table
 
+# making a summary table for the model for the rendered pdf
 as_flextable(temperature_model)
 ```
 
