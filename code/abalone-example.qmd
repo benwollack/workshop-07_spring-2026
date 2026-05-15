@@ -1,14 +1,16 @@
 ---
 title: "Linear regression: Abalone growth and pH example"
-author: "your name here"
-date: "insert date here"
+author: "Ben Wollack"
+date: "2026/05/15"
 format:
-  html:
+  pdf:
     toc: true # use this to display a table of contents
 execute:
   message: false # use this to make sure messages don't show up
   warning: false # use this to make sure warnings don't show up
 ---
+
+Note: Make sure a code and data folder are separated, this keeps things organized.
 
 # Set up
 
@@ -17,7 +19,7 @@ execute:
 
 library(tidyverse) # general use
 library(janitor) # cleaning data frames
-library(here) # file/folder organization
+library(here) # file/folder organization, use if data is in a folder
 library(readxl) # reading .xlsx files
 library(ggeffects) # generating model predictions
 library(flextable) # creating tables
@@ -32,24 +34,25 @@ Data from Hamilton et al. 2022. "Integrated multi-trophic aquaculture mitigates 
 
 ## a. Questions and hypotheses
 
-Question: How does pH predict abalone growth (measured in change in shell surface area per day, mm^-2^ d^-1^)?  
+Question: How does pH predict abalone growth (measured in change in shell surface area per day, mm^2^ d^-1^)?  
 
-H~0~: **[fill in here]**  
+H~0~: **pH does not affect abalone growth in change in shell surface area per day**  
 
-H~A~: **[fill in here]**
+H~A~: **pH does affect abalone growth in change in shell surface area per day**
 
 ## b. Cleaning
 
 ```{r}
 #| label: abalone-data-cleaning
 
-# 
-abalone_clean <- abalone  
-  # 
-  clean_names()  
-  # 
-  select(mean_p_h, change_in_area_mm2_d_1_25)  
-  # 
+# creating new object from abalone data
+abalone_clean <- abalone |> 
+  # remove capitals, add underscores
+  clean_names() |> 
+  # select the columns of interest
+  # mean pH and total change in shell surface area
+  select(mean_p_h, change_in_area_mm2_d_1_25) |> 
+  # rename columns to make it easier to understand
   rename(mean_ph = mean_p_h, 
          change_in_area = change_in_area_mm2_d_1_25)
 ```
@@ -61,11 +64,11 @@ Don't forget to look at your data! Use `View(abalone_clean)` in the _Console_.
 ```{r}
 #| label: abalone-scatterplot
 
-# 
-ggplot(data = abalone_clean, # 
-       aes(x = mean_ph, # 
-           y = change_in_area)) 
-  # 
+# create base layer
+ggplot(data = abalone_clean, # use data from abalone_clean
+       aes(x = mean_ph, # x-axis is the pH, y-axis is the change in area
+           y = change_in_area)) +
+  # first layer: create scatterplot using the observations
   geom_point(size = 4,
              stroke = 1,
              fill = "firebrick4",
@@ -74,7 +77,7 @@ ggplot(data = abalone_clean, #
 
 Where does the missing value come from?  
 
-**insert response here**  
+**The missing value corresponds to the missing pH value. The pH sensor malfunctioned in one pair of tanks, leading to no pH reading here.**  
 
 Don't forget to turn your warnings off either in the individual code chunk or in the YAML at the top of the file.
 
@@ -86,17 +89,19 @@ Don't forget to turn your warnings off either in the individual code chunk or in
 #| label: abalone-model
 
 abalone_model <- lm(
-  change_in_area ~ mean_ph, # 
-  data = abalone_clean      # 
+  change_in_area ~ mean_ph, # formula: change in shell surface area as a function of pH
+  data = abalone_clean      # data: use abalone_clean dataframe
 )
 ```
+
+Note: To view the model, run it in the console.
 
 ### Diagnostics
 
 ```{r abalone-model-diagnostics}
 
-par(mfrow = c(2, 2))   # 
-plot(abalone_model)    # 
+par(mfrow = c(2, 2))   # displays plots in a 2x2 grid, ONLY way these show up correctly
+plot(abalone_model)    # display diagnostic plots for abalone_model
 
 ```
 
@@ -110,13 +115,19 @@ summary(abalone_model)
 
 ```
 
+Checks: Median near 0, 1st and 3rd quantiles are roughly equidistant from 0.
+
+First column of numbers gives us the model estimates. Then standord errors, t values and p values for the estimates. We can see all p values are below 0.05, so there's confidence that neither the slope or y-int is 0.
+
+To assess if the whole model is good, use the p-value from the f distribution (at the bottom). Ours is 0.003.
+
 What is the slope estimate (with standard error?)  
 
-**insert your response here**  
+$\beta_1$ = 2.98 $\pm$ 0.76 
 
 What is the intercept estimate (with standard error?)  
 
-**insert your response here**
+$\beta_1$ = -18.50 $\pm$ 6.16
 
 ### Generating predictions
 
@@ -137,7 +148,7 @@ Look at the column names using `colnames(abalone_preds)` in the Console.
 
 What are the column names?  
 
-**insert your notes here**  
+**x, predicted, std.error, conf.low, conf.high, group (ignore this column for now)** 
 
 Look at the actual object (by clicking on it in Environment).  
 
@@ -145,9 +156,9 @@ Look at the class of the object using `class(abalone_preds)` in the Console.
 
 What is this type of object?  
 
-**insert your notes here**  
+**ggeffects object and a data frame**  
 
-View `abalone_preds` like a data frame. 
+View `abalone_preds` like a data frame. This means we can plot this like how we did during data visualization
 
 ### Why generate model predictions?  
 
@@ -169,7 +180,7 @@ ggpredict(
 
 How would you interpret this?  
 
-**insert your response here**
+**At pH = 8, the model predicts abalone shell growth of 5.36 [5.08, 5.64] mm^2^ d^-1^.**
 
 ### Visualizing model predictions and data
 
