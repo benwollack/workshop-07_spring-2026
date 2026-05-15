@@ -21,3 +21,5 @@ There is a 'code' folder in which all code for linear models is stored.
 ## Rendered output
 
 The rendered PDF for the abalone model is [here](https://github.com/benwollack/workshop-07_spring-2026/blob/main/code/abalone-example.pdf)
+
+The rendered PDF for the sonadora model is [here](https://github.com/benwollack/workshop-07_spring-2026/blob/main/code/sonadora-temperature-example.pdf)
